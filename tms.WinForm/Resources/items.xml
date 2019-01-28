@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root> 
+  <tms.WinForm.Sample>
+    <SampleHwManager>
+      <txtCengBegin>4</txtCengBegin>
+      <txtLieBegin>3</txtLieBegin>
+      <lookUpEdityyyymm> 
+        <月>1</月>
+        <季度>4</季度>
+        <半年>6</半年>
+        <年>12</年>
+      </lookUpEdityyyymm>
+      <!--<HwLimit>
+        <ZT name="专题区">
+          <年月></年月> 
+        </ZT>
+        <BB name="本版区">
+          <年月></年月>
+          <货源></货源>
+        </BB>
+        <WB name="外版区">
+          <年月></年月>
+          <货源></货源>
+          <分类></分类>
+        </WB>
+      </HwLimit>-->
+    </SampleHwManager>
+    <LackProcess>
+      <comboLackLx>
+        <全部></全部>
+        <校核差异>jhcy</校核差异>
+        <上架差异>sjcy</上架差异>
+      </comboLackLx>
+      <comboPrint>
+        <全部></全部>
+        <未打印>0</未打印>
+        <已打印>1</已打印>
+      </comboPrint>
+      <comboConfirm>
+        <全部></全部>
+        <未确认>0</未确认>
+        <已确认>1</已确认>
+      </comboConfirm>
+      <TabIndex>
+        <comboLackLx></comboLackLx>
+        <dateEditBegin></dateEditBegin>
+        <dateEditEnd></dateEditEnd>
+         <txtDjh></txtDjh>
+        <comboPrint></comboPrint>
+        <comboConfirm></comboConfirm>
+        <lookUpEditUser></lookUpEditUser> 
+        <btnSearch></btnSearch>
+      </TabIndex>
+    </LackProcess>
+    
+    <TaskSearch>
+      <comboSjStatus>
+        <未上架>0</未上架>
+        <已上架>1</已上架>
+      </comboSjStatus>
+      <comboSjLx>
+        <全部></全部>
+        <到货校核>dhjh</到货校核> 
+      </comboSjLx>
+      <comboJhZt>
+        <全部></全部>
+        <未校核>0</未校核>
+        <已校核>1</已校核>
+      </comboJhZt>
+      <comboXjZt>
+        <全部></全部>
+        <未领取>0</未领取>
+        <正在下架>1</正在下架>
+        <完成>4</完成>
+      </comboXjZt>
+    </TaskSearch>
+    <ExceptionSearch>
+      <comboExceptionLx>
+        <订单异常>t_trans_ybsdhdj_err</订单异常>
+        <其他异常>t_errlog</其他异常>
+      </comboExceptionLx>
+    </ExceptionSearch>
+    <MakeXjPlan>
+      <TabIndex>
+        <lookUpEditGhdw></lookUpEditGhdw>
+        <lookUpEditHq></lookUpEditHq>
+        <lookUpEditYbsfl></lookUpEditYbsfl>
+        <txtSm></txtSm>
+        <txtIsbn></txtIsbn>
+        <txtDjBegin></txtDjBegin>
+        <txtDjEnd></txtDjEnd>
+        <dateEditShBegin></dateEditShBegin>
+        <dateEditShEnd></dateEditShEnd>
+        <dateEditCbnyBegin></dateEditCbnyBegin>
+        <dateEditCbnyEnd></dateEditCbnyEnd>
+      </TabIndex>
+    </MakeXjPlan>
+  
+  
+  </tms.WinForm.Sample>
+
+  <tms.WinForm.Purchase>
+    <UserRegist>
+      <TabIndex>
+        <comboBoxEditQh></comboBoxEditQh>
+        <lookupLibraty></lookupLibraty>
+        <lookupPaylibrary></lookupPaylibrary>
+        <dateEditBegin></dateEditBegin>
+        <dateEditEnd></dateEditEnd>
+
+        <lookupLibraty2></lookupLibraty2>
+        <lookupPaylibrary2></lookupPaylibrary2>
+        <spinEditPerson></spinEditPerson>
+        <checkedComboBoxEditHq></checkedComboBoxEditHq>
+        
+      </TabIndex>
+    </UserRegist>
+  </tms.WinForm.Purchase>
+  <CommonSpace>
+    <Common>
+      
+    </Common>
+  </CommonSpace>
+
+
+  <tms.WinForm>
+    <test>
+      <TabIndex>
+        <textEdit6></textEdit6>
+        <textEdit5></textEdit5>
+        <textEdit4></textEdit4>
+        <textEdit3></textEdit3>
+      </TabIndex>
+    </test>
+  </tms.WinForm>
+  
+    
+</root>

@@ -1,0 +1,649 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+
+
+  <tms.WinForm>
+    <FormMain>
+      <Get_Menu decripcation="检索用户菜单项">
+        <parameter name="p_czybh" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          select distinct yybh,yymc,yjmc,ejmc  from t_group_operator
+          where groupbh in (select groupbh from t_group_user where user_id=:p_czybh) and yymc='物流系统'
+          order by yybh,yymc,yjmc,ejmc
+        </sql>
+      </Get_Menu>
+    </FormMain>
+    <Login>
+    <RF_LOGIN>
+      <parameter name="p_czybh" type="NUMBER" direction="in"></parameter>
+      <parameter name="p_password" type="CHAR" direction="in"></parameter>
+      <parameter name="p_name" type="VARCHAR" direction="out"></parameter>
+      <parameter name="p_paylibrary" type="VARCHAR" direction="out"></parameter>
+       <parameter name="p_lx" type="VARCHAR" direction="out"></parameter>
+      <parameter name="errno" type="NUMBER" direction="out"></parameter>
+      <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+      <commandType>StoredProcedure</commandType>
+      <sql>RF_LOGIN</sql>
+      </RF_LOGIN>
+    </Login>
+  </tms.WinForm>
+ 
+
+  <tms.WinForm>
+    <Form1>
+      <Test>
+        <parameter name="p_p" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          update t_hwdy set  yxhw=:p_p where hw='01001010101'
+        </sql>
+      </Test>
+    </Form1>
+  </tms.WinForm>
+  <tms.WinForm.Sample>
+   
+    <SampleTransfer>
+      <SearchDjMx>
+        <parameter name="p_djh" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          Select trim(t.isbn) isbn,
+          sm 书名,
+          dj 定价,
+          jhflag 状态,
+          t.id,
+          yscs 册数,
+          decode(PSFLAG,'1','破损','正常') 破损,
+          note 货位,
+          w.mc 供货商,
+          DIRECTION 去向,SAMEISBN
+          From T_CHECKDETAIL t, t_kcsm  s ，t_ghdw w
+          Where kfbh = '2009'
+          And djh = :p_djh
+          and s.id=t.id
+          and t.id_ghdw=w.id
+        </sql>
+      </SearchDjMx>
+      
+      <SearchDj>
+        <parameter name="p_djh" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+         select djh 单据号 ,w.mc 供货商 ,shdate 收货日期 , zmy 总码洋 ,zsy  总实洋   
+         from T_YBSDHDJ t ,t_ghdw w where zt='0' and djh like :p_djh  and t.id_ghdw=w.id
+        </sql> 
+      </SearchDj>
+      
+      <UpdateJH>
+        <parameter name="p_djh" type="Char" direction="in"></parameter>
+        <parameter name="p_id" type="Char" direction="in"></parameter>
+        <parameter name="p_jhczy" type="Char" direction="in"></parameter>
+        <parameter name="p_jhname" type="Char" direction="in"></parameter>
+        <parameter name="p_ps" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          update T_CHECKDETAIL  set jhflag='1',jhcs=jhcs+1,jhczy=:p_jhczy ,jhname=:p_jhname
+          ,jhdate=sysdate ,psflag=:p_ps  where jhflag='0' and djh=:p_djh and id=:p_id
+        </sql>
+      </UpdateJH> 
+      <UpdateJHBulk>
+        <parameter name="p_djh" type="Char" direction="in"></parameter> 
+        <parameter name="p_jhczy" type="Char" direction="in"></parameter>
+        <parameter name="p_jhname" type="Char" direction="in"></parameter> 
+        <commandType>Text</commandType>
+        <sql>
+          update T_CHECKDETAIL  set jhflag='1',jhcs=yscs,jhczy=:p_jhczy ,jhname=:p_jhname
+          ,jhdate=sysdate   where jhflag='0' and direction &lt;&gt; '0' and djh=:p_djh 
+        </sql>
+      </UpdateJHBulk>
+      <SearchSameIsbn>
+        <parameter name="p_djh" type="Char" direction="in"></parameter>
+        <parameter name="p_isbn" type="Char" direction="in"></parameter> 
+        <commandType>Text</commandType>
+        <sql>
+          Select trim(t.isbn) isbn,
+          sm 书名,
+          dj 定价,t.id
+          From T_CHECKDETAIL t, link_kcsm  s  
+          Where kfbh = '2009' 
+          and s.id=t.id and
+          djh=:p_djh and t.isbn=:p_isbn and jhflag='0' and    direction &lt;&gt; '0'
+        </sql>
+      </SearchSameIsbn>
+      <CancelJH>
+        <parameter name="p_djh" type="Char" direction="in"></parameter>
+        <parameter name="p_id" type="Char" direction="in"></parameter> 
+        <commandType>Text</commandType>
+        <sql>
+          update T_CHECKDETAIL  set jhflag='0',jhcs=jhcs-1,jhczy=null ,jhname=null
+          ,jhdate=null ,psflag='0'  where jhflag='1' and djh=:p_djh and id=:p_id
+        </sql>
+      </CancelJH>
+      
+      <PROC_JH_YBS>
+        <parameter name="p_djh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_rqh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_czybh" type="CHAR" direction="in"></parameter> 
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_JH_YBS</sql>
+      </PROC_JH_YBS>
+      
+      <PROC_TRANS_YBSJH3> 
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_TRANS_YBSJH3</sql>
+      </PROC_TRANS_YBSJH3>
+      
+      <PROC_CHANGEDIRECTION>
+        <parameter name="p_djh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_rqh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_topic" type="CHAR" direction="in"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_CHANGEDIRECTION</sql>
+      </PROC_CHANGEDIRECTION>
+    </SampleTransfer>
+    
+    <SampleBarCodePrint>
+      <SearchBookPrint>
+        <parameter name="p_isbn" type="Char" direction="in"></parameter> 
+        <commandType>Text</commandType>
+        <sql>
+          Select
+          trim(isbn) isbn,
+          trim(sm) sm,
+          (Select mc From t_bb Where bh=a.bb) bb,
+          dj,
+          id,
+          cbny 
+          From  t_kcsm   Where  isbn=:p_isbn
+        </sql>
+      </SearchBookPrint>
+    </SampleBarCodePrint>
+    <test3>
+      <t_user>
+        <commandType>Text</commandType>
+        <sql>
+          Select
+           name,usr_id,kfbh 
+          From  t_user   Where  rownum &lt;10
+        </sql>
+      </t_user>
+    </test3>
+    
+    <SampleHwManager>
+
+      <T_HQLIMIT>
+        <commandType>Text</commandType>
+        <sql>
+          select lx_hqdy ,item from  T_HQLIMIT where enablemodify='1'
+        </sql>
+      </T_HQLIMIT>
+      <hqdy>
+        <commandType>Text</commandType>
+        <sql>
+          select  trim(id) 编号, trim(mc) 名称   from T_HQDY
+        </sql>
+      </hqdy>
+      <t_ghdw>
+        <commandType>Text</commandType>
+        <sql>
+          select  trim(id) 编号, trim(mc)  名称  from t_ghdw where localflag='1'
+        </sql>
+      </t_ghdw>
+      <PROC_YBS_SETHW>
+        <parameter name="p_hw" type="CHAR" direction="in"></parameter>
+        <parameter name="p_hqlx" type="CHAR" direction="in"></parameter>
+        <parameter name="p_fl" type="CHAR" direction="in"></parameter>
+        <parameter name="p_ghdw" type="CHAR" direction="in"></parameter>
+        <parameter name="p_yyyymm" type="CHAR" direction="in"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_YBS_SETHW</sql>
+      </PROC_YBS_SETHW>
+    <SearchHw>
+      <parameter name="p_hqbh" type="Char" condition=" and id_hqdy=:p_hqbh "></parameter>
+      <parameter name="p_xdBegin"  type="NUMBER" condition=" and xd&gt;=:p_xdBegin "></parameter>
+      <parameter name="p_xdEnd" type="NUMBER" condition=" and xd &lt;=:p_xdEnd "></parameter>
+      <parameter name="p_shelfBegin"  type="NUMBER" condition=" and hj&gt;=:p_shelfBegin "></parameter>
+      <parameter name="p_shelfEnd" type="NUMBER" condition=" and hj &lt;=:p_shelfEnd "></parameter>
+      <parameter name="p_cengBegin"  type="NUMBER" condition=" and ceng&gt;=:p_cengBegin "></parameter>
+      <parameter name="p_cengEnd" type="NUMBER" condition=" and ceng &lt;=:p_cengEnd "></parameter>
+      <parameter name="p_lieBegin"  type="NUMBER" condition=" and lie&gt;=:p_lieBegin "></parameter>
+      <parameter name="p_lieEnd" type="NUMBER" condition=" and lie &lt;=:p_lieEnd "></parameter>
+      <commandType>Text</commandType>
+        <sql>
+          seleCt  w.xd,w.hj,w.ceng,w.lie,q.mc,id hqbh ,hw,id_ghdw 货源,ybsfl_fl 分类,lx 类型,id_span 年月
+          from t_hwdy w,t_hqdy q where w.id_hqdy=q.id
+          <!--seleCt  w.xd,w.hj,w.ceng,w.lie, mc,  hqbh ,hw,id_ghdw 货源,ybsfl_fl 分类,lx 类型,id_span 年月
+          from t_hwprint w-->
+        </sql>
+    </SearchHw>
+       
+      <btnShelfSearch_Click>
+        <commandType>Text</commandType>
+        <sql>
+          select id 货架,fl 分类 from t_shelffl s  
+        </sql> 
+      </btnShelfSearch_Click>
+      <PROC_ADDHW_YBS>
+        <parameter name="p_hqbh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_ywbmbh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_xdbegin" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_xdend" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_shelfbegin" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_shelfend" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_ceng" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_lie" type="NUMBER" direction="in"></parameter>
+        <parameter name="p_override" type="CHAR" direction="in"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_ADDHW_YBS</sql>
+      </PROC_ADDHW_YBS>
+
+      <SaveShelfFl>
+        <parameter name="p_fl" type="Char" direction="in"></parameter>
+        <parameter name="p_id" type="Char" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          update t_shelffl set fl=:p_fl where id=:p_id
+        </sql>
+      </SaveShelfFl>
+    </SampleHwManager>
+
+    <LackProcess>
+      <SearchLack>
+        <parameter name="p_lx" type="Char" condition=" and lx=:p_lx "></parameter>
+        <parameter name="p_print"  type="Char" condition=" and printflag=:p_print "></parameter>
+        <parameter name="p_confirm" type="Char" condition=" and confirmflag=:p_confirm "></parameter>
+        <parameter name="p_begin"  type="DateTime" condition=" and createdate&gt;=:p_begin "></parameter>
+        <parameter name="p_end" type="DateTime" condition=" and createdate &lt;=:p_end "></parameter>
+        <parameter name="p_djh"  type="Char" condition=" and djh like :p_djh "></parameter>
+        <parameter name="p_czybh"  type="Char" condition=" and createczy=:p_czybh "></parameter>
+        <parameter name="p_init"  type="Number" condition=" and 1=:p_init "></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          select djh 单据号,
+          trim(sm) 书名,
+          dj 定价,
+          trim(isbn) 书号,
+          cs 册数,
+          createdate 差异日期,
+          (select trim(mc) from t_ghdw where id = id_ghdw) 供货商,
+          decode(printflag,'0','未打印'，'已打印') 打印,
+          t.id,
+          id_ghdw,
+          sourcetable,
+          sourceid
+          from t_lack t, t_kcsm s
+          where t.id = s.id 
+        </sql>
+      </SearchLack>
+      <UpdatePrintFlag>
+         <parameter name="p_tbname"  type="VARCHAR" direction="in"></parameter>
+        <parameter name="p_flowid"  type="Number"  direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          update   t_lack set printflag='1' 
+           where sourceid = :p_flowid and sourcetable=:p_tbname
+        </sql>
+      </UpdatePrintFlag>
+    </LackProcess>
+  
+    <TaskSearch>
+       <SearchSj>
+        <parameter name="p_hqbh" type="Char" condition=" and id_hqdy=:p_hqbh "></parameter>
+        <parameter name="p_lx"  type="Char" condition=" and lx=:p_lx "></parameter>
+        <parameter name="p_zt" type="Char" condition=" and    zt=:p_zt "></parameter>
+        <parameter name="p_ghdw"  type="Char" condition=" and   id_ghdw=:p_ghdw "></parameter>
+        <parameter name="p_SjBegin" type="DateTime" condition=" and createdate &gt;=:p_SjBegin "></parameter>
+        <parameter name="p_SjEnd"  type="DateTime" condition=" and createdate&lt;=:p_SjEnd "></parameter> 
+      <commandType>Text</commandType>
+        <sql>
+          select djh 单据,
+           trim(sm) 书名,
+           isbn,
+           dj 定价,
+           shdate 收货日期,
+           createdate 生成日期,
+           sjdate 上架日期,
+           sjczyname 上架人,
+           mc_hqdy 货区,
+           mc_ghdw 供货商,FLOWID, ZT
+           from v_sjmx v, t_kcsm s
+           where v.id = s.id 
+        </sql>
+       </SearchSj>
+      <PROC_SJLACKBOOK>
+        <parameter name="p_flowid" type="CHAR" direction="in"></parameter>
+        <parameter name="p_czybh" type="CHAR" direction="in"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_SJLACKBOOK</sql>
+      </PROC_SJLACKBOOK>
+    
+     <SearchJH> 
+        <parameter name="p_djh"  type="Char" condition=" and djh=:p_djh "></parameter>
+        <parameter name="p_zt" type="Char" condition=" and    zt=:p_zt "></parameter>
+        <parameter name="p_ghdw"  type="Char" condition=" and   id_ghdw=:p_ghdw "></parameter>
+        <parameter name="p_JhBegin" type="DateTime" condition=" and createdate &gt;=:p_JhBegin "></parameter>
+        <parameter name="p_JhEnd"  type="DateTime" condition=" and createdate&lt;=:p_JhEnd "></parameter> 
+      <commandType>Text</commandType>
+        <sql>
+         select djh 单据号,
+           zmy 总码洋,
+           zsy 总实洋,
+           zcs 总册数,
+           shdate 收货日期,
+           decode(zt, '0', '未校核', '已校核') 状态
+            from T_YBSDHDJ t, t_ghdw w
+           where w.id = t.id_ghdw 
+        </sql>
+       </SearchJH>
+       <SearchJHMx> 
+        <parameter name="p_djh"  type="Char"  direction="in"></parameter> 
+        <commandType>Text</commandType>
+          <sql>
+           select trim(sm) 书名,trim(isbn) isbn ,dj 定价 ,yscs 原数量 ,jhcs 校核数 ,
+            jhname 校核人,direction 去向,decode(psflag,'0','否','1','是') 破损 from  
+            v_jhmx  v,t_kcsm s  where  v.djh =:p_djh and  s.id=v.id 
+          </sql>
+         </SearchJHMx>
+    
+        <SearchXj> 
+            <parameter name="p_hq"  type="Char" condition=" and q.id=:p_hq "></parameter>
+            <parameter name="p_zt" type="Char" condition=" and    zt=:p_zt "></parameter> 
+            <parameter name="p_XjBegin" type="DateTime" condition=" and createdate &gt;=:p_XjBegin "></parameter>
+            <parameter name="p_XjEnd"  type="DateTime" condition=" and createdate&lt;=:p_XjEnd "></parameter> 
+          <commandType>Text</commandType>
+            <sql> 
+            select  flowid        任务号，
+                    yssl          原数量,
+                   sjsl          实际数,
+                   zmy           总码洋,
+                   picktimes     次数,
+                   resttimes     剩余次数,
+                   createdate    任务时间,
+                   createczyname 计划人,
+                   xjdate        下架时间,
+                   xjczyname     下架人,
+                   decode(zt,'0','未领取','1','正在下架','4','完成') 状态,
+                   q.mc          货区
+              from t_xjtask x, t_hqdy q
+             where x.id_hqdy = q.id
+            </sql>
+         </SearchXj>
+      
+        <SearchXjMx> 
+        <parameter name="p_flowid"  type="Char"  direction="in"></parameter> 
+        <commandType>Text</commandType>
+          <sql>
+            select trim(sm) 书名,
+             trim(isbn) isbn,
+             dj 定价,
+             hw 货位,
+             yssl 原数量,
+             sjsl 实际数,
+             xjdate 下架时间,
+             xjczyname 下架人
+            from v_xjmx v, t_kcsm s
+           where s.id =v.id and flowid_xjtask= :p_flowid 
+          </sql>
+         </SearchXjMx>
+    </TaskSearch>
+    
+     <ExceptionSearch>
+        <t_trans_ybsdhdj_err>
+        <parameter name="p_dateBegin"  type="DateTime"  direction="in"></parameter>
+        <parameter name="p_dateEnd"  type="DateTime"  direction="in"></parameter>  
+        <commandType>Text</commandType>
+          <sql>
+            select djh 单据号,trim(w.mc) 供货商,shdate 收货时间 ,createdate 生成时间,reason 异常信息
+            from T_TRANS_YBSDHDJ_ERR t ,t_ghdw w
+            where  createdate  &gt;：p_dateBegin and  createdate &lt;：p_dateEnd and t.id_ghdw =w.id 
+          </sql>
+        </t_trans_ybsdhdj_err>
+     
+        <t_errlog>
+           <parameter name="p_dateBegin"  type="DateTime"  direction="in"></parameter>
+            <parameter name="p_dateEnd"  type="DateTime"  direction="in"></parameter>  
+            <commandType>Text</commandType>
+              <sql>
+              select procname 名称,createdate 生成时间,errmsg  异常信息 from T_ERRLOG t
+               where  createdate  &gt;：p_dateBegin and  createdate &lt;：p_dateEnd
+              </sql>
+        </t_errlog>
+     </ExceptionSearch>
+
+    <MakeXjPlan>
+      <SearchLtkf>
+        <parameter name="p_ghdw" type="Char" condition="  and l.id_ghdw= :p_ghdw"></parameter>
+        <parameter name="p_hq" type="Char" condition="  and l.id_hqdy=:p_hq"></parameter>
+        <parameter name="p_fl" type="Char" condition="  and  l.ybsfl_fl=:p_fl"></parameter>
+        <parameter name="p_sm" type="Char" condition="  and s.sm like :p_sm"></parameter>
+        <parameter name="p_isbn" type="Char" condition="  and isbn=:p_isbn"></parameter>
+        <parameter name="p_yyyyBegin" type="NUMBER" condition="  and l.yyyy &gt;= :p_yyyyBegin "></parameter>
+        <parameter name="p_yyyyEnd" type="NUMBER" condition="  and l.yyyy &lt;= :p_yyyyEnd "></parameter>
+        <parameter name="p_mmBegin" type="NUMBER" condition="  and l.mm &gt;= :p_mmBegin"></parameter>
+        <parameter name="p_mmEnd" type="NUMBER" condition="  and l.mm &lt;= :p_mmEnd"></parameter>
+        <parameter name="p_djBegin" type="NUMBER" condition=" and dj   &gt;=:p_djBegin"></parameter>
+        <parameter name="p_djEnd" type="NUMBER" condition=" and dj &lt;=:p_djEnd"></parameter>
+        <parameter name="p_cbnyBegin" type="NUMBER" condition=" and cbny &gt;=:p_cbnyBegin"></parameter>
+        <parameter name="p_cbnyEnd" type="NUMBER" condition=" and cbny &lt;=:p_cbnyEnd"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(sm) 书名,
+          isbn,
+          dj 定价,
+          kccs 册数,
+          dj *kccs 码洋,
+          l.hw 货位,
+          s.cbny 出版年月,
+          (select trim(ybsflmc)
+          from t_fl
+          where ybsfl = l.ybsfl_fl
+          and rownum = 1) 分类,
+          yyyy || lpad(mm, 2, '0') 收货日期,
+          (select mc from t_ghdw where    id=l.id_ghdw) 供货商,
+          (select mc from t_hqdy where    id=l.id_hqdy) 货区,
+          l.id,id_hqdy
+          from t_ltkf l, t_kcsm s
+          where   zycs=0 and s.id = l.id
+        </sql>
+      </SearchLtkf>
+      <t_issueXjplan>
+        <commandType>Text</commandType>
+        <sql>
+          select id,hw,kccs ,my,id_hqdy ,guid from  t_issueXjplan where 1=2
+        </sql>
+      </t_issueXjplan>
+      <PROC_ISSUEXJPLAN>
+        <parameter name="p_guid" type="CHAR" direction="in"></parameter>
+        <parameter name="p_czybh" type="CHAR" direction="in"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_ISSUEXJPLAN</sql>
+      </PROC_ISSUEXJPLAN>
+    </MakeXjPlan>
+    
+    <StockSearch>
+        <SearchLtkf>
+        <parameter name="p_ghdw" type="Char" condition="  and l.id_ghdw= :p_ghdw"></parameter>
+        <parameter name="p_hq" type="Char" condition="  and l.id_hqdy=:p_hq"></parameter>
+        <parameter name="p_fl" type="Char" condition="  and  l.ybsfl_fl=:p_fl"></parameter>
+        <parameter name="p_hw" type="Char" condition="  and l.hw = :p_hw "></parameter>
+        <parameter name="p_yyyyBegin" type="NUMBER" condition="  and l.yyyy &gt;= :p_yyyyBegin "></parameter>
+        <parameter name="p_yyyyEnd" type="NUMBER" condition="  and l.yyyy &lt;= :p_yyyyEnd "></parameter>
+        <parameter name="p_mmBegin" type="NUMBER" condition="  and l.mm &gt;= :p_mmBegin"></parameter>
+        <parameter name="p_mmEnd" type="NUMBER" condition="  and l.mm &lt;= :p_mmEnd"></parameter> 
+        <parameter name="p_cbnyBegin" type="NUMBER" condition=" and cbny &gt;=:p_cbnyBegin"></parameter>
+        <parameter name="p_cbnyEnd" type="NUMBER" condition=" and cbny &lt;=:p_cbnyEnd"></parameter>
+        <parameter name="p_isbn" type="Char" condition=" and s.isbn =:p_isbn"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(sm) 书名,
+          isbn,
+          dj 定价,
+          kccs 册数,
+          dj *kccs 码洋,
+          l.hw 货位,
+          s.cbny 出版年月,
+          (select trim(ybsflmc)
+          from t_fl
+          where ybsfl = l.ybsfl_fl
+          and rownum = 1) 分类,
+          yyyy || lpad(mm, 2, '0') 收货日期,
+          (select mc from t_ghdw where    id=l.id_ghdw) 供货商,
+          (select mc from t_hqdy where    id=l.id_hqdy) 货区,
+          l.id,id_hqdy
+          from t_ltkf l, t_kcsm s
+          where   s.id = l.id
+        </sql>
+      </SearchLtkf>
+    </StockSearch>
+    
+    <PKSearch>
+      <SearchCy>
+        <parameter name="p_id_hqdy" type="Char" condition=" and t.id_hqdy=:p_id_hqdy "></parameter>
+        <parameter name="p_xdBegin"  type="NUMBER" condition=" and xd&gt;=:p_xdBegin "></parameter>
+        <parameter name="p_xdEnd" type="NUMBER" condition=" and xd &lt;=:p_xdEnd "></parameter>
+        <parameter name="p_shelfBegin"  type="NUMBER" condition=" and hj&gt;=:p_shelfBegin "></parameter>
+        <parameter name="p_shelfEnd" type="NUMBER" condition=" and hj &lt;=:p_shelfEnd "></parameter>
+        <parameter name="p_djBegin"  type="NUMBER" condition=" and dj&gt;=:p_djBegin "></parameter>
+        <parameter name="p_djEnd" type="NUMBER" condition=" and dj &lt;=:p_djEnd "></parameter>
+        <parameter name="p_chayiBegin"  type="NUMBER" condition=" and abs(cycs)&gt;=:p_chayiBegin "></parameter>
+        <parameter name="p_chayiEnd" type="NUMBER" condition=" and abs(cycs)&lt;=:p_chayiEnd "></parameter>
+        <parameter name="p_id_ghdw" type="Char" condition=" and t.id_ghdw=:p_id_ghdw "></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(s.sm) 书名,s.dj 定价,s.isbn,t.kccs 库存数,t.pkcs 盘库数,t.cycs 差异数 ,t.hw 货位,trim(g.mc) 供货商  from V_PKCY t,t_kcsm s ,t_hwdy w ,t_ghdw g
+          where t.id=s.id and t.hw=w.hw and g.id=t.id_ghdw 
+        </sql>
+      </SearchCy>
+    </PKSearch>
+  </tms.WinForm.Sample>
+  <tms.WinForm.Purchase>
+    <UserRegist>
+      <T_GPFLOWID>
+        <commandType>Text</commandType>
+        <sql>
+          select flowid from  T_GPFLOWID order by CREATEDATE desc
+        </sql>
+      </T_GPFLOWID>
+      <UpdatePwdHq>
+        <parameter name="p_gpflowid" type="CHAR" direction="in"></parameter>
+        <parameter name="p_userid" type="CHAR" direction="in"></parameter>
+        <parameter name="p_pwd" type="CHAR" direction="in"></parameter>
+        <parameter name="p_ids_hqdy" type="CHAR" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+          update T_REGISTUSER set  password=:p_pwd, ids_hqdy=:p_ids_hqdy
+          where   gpflowid=:p_gpflowid and   id=:p_userid
+        </sql>
+      </UpdatePwdHq>
+      <PROC_ADDUSER>
+        <parameter name="p_library" type="CHAR" direction="in"></parameter>
+        <parameter name="p_paylibrary" type="CHAR" direction="in"></parameter>
+        <parameter name="p_czybh" type="CHAR" direction="in"></parameter>
+        <parameter name="p_ids_hqdy" type="VARCHAR" direction="in"></parameter>
+        <parameter name="p_gpflowid" type="NUMBER" direction="out"></parameter>
+        <parameter name="errno" type="NUMBER" direction="out"></parameter>
+        <parameter name="errtext" type="VARCHAR" direction="out"></parameter>
+        <commandType>StoredProcedure</commandType>
+        <sql>PROC_ADDUSER</sql>
+      </PROC_ADDUSER>
+      <SearchUser>
+        <parameter name="p_library" type="VARCHAR" condition=" and library =:p_library "></parameter>
+        <parameter name="p_gpflowid"  type="NUMBER" condition=" and id_gpflowid =:p_gpflowid "></parameter> 
+        <commandType>Text</commandType>
+        <sql>
+          select id,password 密码,libraryname 图书馆,paylibraryname 结算图书馆,
+          id_gpflowid 馆配期号,orderid 订单号 ,
+          decode(active,'0','未提交','1','提交') 状态,createdate 登记时间,ids_hqdy 货区
+          from T_REGISTUSER t where 1=1 
+        </sql>
+        <lastsql>
+          order by  createdate desc
+        </lastsql>
+      </SearchUser>
+      <LoadLibrary>
+      <commandType>Text</commandType>
+        <sql>
+          select trim(LIBRARY) 编号,trim(MC) 名称 from link_library
+        </sql>
+      </LoadLibrary>
+    </UserRegist>
+    <OrderProcess>
+      <GetOrder>
+        <commandType>Text</commandType>
+        <sql>
+          select flowid 订单号, createdate 日期,  id_gpflowid 馆配期号, libraryname 图书馆, paylibraryname 结算图书馆,
+          decode(lx,  '0','登记订单','1','导入订单','2','导入覆盖订单') 类型 ，
+          decode(zt,'0', '未生成'，'1'，'未上传'，'2','已上传') 状态 from t_gporder
+        </sql>
+      </GetOrder>
+      <GetOrderDetail>
+        <commandType>Text</commandType>
+        <sql>
+          select isbn,sm from T_ORDERDETAIL
+        </sql>
+      </GetOrderDetail>
+      <simpleButton1_Click>
+        <parameter name="p_flowid" type="NUMBER" direction="in"></parameter>
+        <commandType>Text</commandType>
+        <sql>
+         insert into t_test values(:p_flowid)
+        </sql>
+      </simpleButton1_Click>
+    </OrderProcess>
+    <LibraryImport>
+      <GetOrderDetail>
+        <commandType>Text</commandType>
+        <sql>
+          select isbn,sm from T_ORDERDETAIL
+        </sql>
+      </GetOrderDetail>
+    </LibraryImport>
+  </tms.WinForm.Purchase>
+
+  <tms.Common>
+    <Common>
+      <t_user>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(id) 编号,trim(name) 名称 from t_user
+        </sql>
+      </t_user>
+      
+      <t_hqdy>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(id) 编号, trim(mc) 名称 from t_hqdy
+        </sql>
+      </t_hqdy>
+      
+        <t_ghdw>
+        <commandType>Text</commandType>
+        <sql>
+          select trim(id) 编号, trim(mc) 名称  from t_ghdw
+        </sql>
+      </t_ghdw>
+      
+      <ybsfl_t_fl>
+        <commandType>Text</commandType>
+        <sql>
+          select distinct trim(ybsfl) 编号, trim(ybsflmc)  名称 from t_fl order by 编号
+        </sql>
+      </ybsfl_t_fl> 
+    </Common>
+  </tms.Common>
+</root>

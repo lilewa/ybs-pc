@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tms.WinForm", "tms.WinForm\tms.WinForm.csproj", "{1CC7CE84-2E4D-48B6-B35B-8FBFAF601345}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tms.WebService", "tms.WebService\tms.WebService.csproj", "{58D85A2B-6894-4450-930A-B9B01F6E28BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tms.DataAccess", "tms.DataAccess\tms.DataAccess.csproj", "{D0C89B33-D566-4CDE-856C-E59FA1A7C266}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CC7CE84-2E4D-48B6-B35B-8FBFAF601345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CC7CE84-2E4D-48B6-B35B-8FBFAF601345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CC7CE84-2E4D-48B6-B35B-8FBFAF601345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CC7CE84-2E4D-48B6-B35B-8FBFAF601345}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58D85A2B-6894-4450-930A-B9B01F6E28BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58D85A2B-6894-4450-930A-B9B01F6E28BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58D85A2B-6894-4450-930A-B9B01F6E28BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58D85A2B-6894-4450-930A-B9B01F6E28BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0C89B33-D566-4CDE-856C-E59FA1A7C266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0C89B33-D566-4CDE-856C-E59FA1A7C266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0C89B33-D566-4CDE-856C-E59FA1A7C266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0C89B33-D566-4CDE-856C-E59FA1A7C266}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
